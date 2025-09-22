@@ -1,0 +1,19 @@
+services:
+  mittel_engagement:
+    image: "592582443043.dkr.ecr.us-east-1.amazonaws.com/mittel/engagement:latest"
+    env_file: "engagement.env"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "engagement_mysql"
+    restart: "always"
+
+  engagement_mysql:
+    image: "mysql"
+    env_file: "engagement_mysql.env"
+    volumes:
+      - "engagement_data:/var/lib/mysql"
+    restart: "always"
+
+volumes:
+  engagement_data:
