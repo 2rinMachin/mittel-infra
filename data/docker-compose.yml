@@ -1,19 +1,32 @@
 services:
-  mittel_engagement:
+  users_db:
+    image: "postgres:17"
+    env_file: "users_db.env"
+    ports:
+      - "5432:5432"
+    volumes:
+      - "users_data:/var/lib/postgresql/data"
+    restart: "always"
+
+  engagement:
     image: "592582443043.dkr.ecr.us-east-1.amazonaws.com/mittel/engagement:latest"
     env_file: "engagement.env"
     ports:
       - "8080:8080"
     depends_on:
-      - "engagement_mysql"
+      - "engagement_db"
     restart: "always"
 
-  engagement_mysql:
+  engagement_db:
     image: "mysql"
-    env_file: "engagement_mysql.env"
+    env_file: "engagement_db.env"
+    ports:
+      - "3306:3306"
     volumes:
       - "engagement_data:/var/lib/mysql"
     restart: "always"
 
 volumes:
+  users_data:
+  posts_data:
   engagement_data:
