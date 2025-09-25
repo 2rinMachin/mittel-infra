@@ -1,6 +1,8 @@
+name: "mittel"
+
 services:
   users:
-    image: "592582443043.dkr.ecr.us-east-1.amazonaws.com/mittel/users"
+    image: "592582443043.dkr.ecr.us-east-1.amazonaws.com/mittel/users:latest"
     env_file: "users.env"
     ports:
       - "4000:4000"
@@ -15,6 +17,24 @@ services:
       - "5432:5432"
     volumes:
       - "users_data:/var/lib/postgresql/data"
+    restart: "always"
+
+  articles:
+    image: "592582443043.dkr.ecr.us-east-1.amazonaws.com/mittel/articles:latest"
+    env_file: "articles.env"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "articles_db"
+    restart: "always"
+
+  articles_db:
+    image: "mongo:8"
+    env_file: "articles_db.env"
+    volumes:
+      - "articles_data:/data/db"
+    ports:
+      - "27017:27017"
     restart: "always"
 
   engagement:
@@ -37,5 +57,5 @@ services:
 
 volumes:
   users_data:
-  posts_data:
+  articles_data:
   engagement_data:
