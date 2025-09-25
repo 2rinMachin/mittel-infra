@@ -1,4 +1,13 @@
 services:
+  users:
+    image: "592582443043.dkr.ecr.us-east-1.amazonaws.com/mittel/users"
+    env_file: "users.env"
+    ports:
+      - "4000:4000"
+    depends_on:
+      - "users_db"
+    restart: "always"
+
   users_db:
     image: "postgres:17"
     env_file: "users_db.env"
@@ -18,7 +27,7 @@ services:
     restart: "always"
 
   engagement_db:
-    image: "mysql"
+    image: "mysql:9"
     env_file: "engagement_db.env"
     ports:
       - "3306:3306"
