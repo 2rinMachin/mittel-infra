@@ -1,0 +1,28 @@
+name: "mittel"
+
+services:
+  users:
+    image: "592582443043.dkr.ecr.us-east-1.amazonaws.com/mittel/users:latest"
+    env_file: "users.env"
+    ports:
+      - "4000:4000"
+    restart: "always"
+
+  articles:
+    image: "592582443043.dkr.ecr.us-east-1.amazonaws.com/mittel/articles:latest"
+    env_file: "articles.env"
+    ports:
+      - "3000:3000"
+    restart: "always"
+
+  engagement:
+    image: "592582443043.dkr.ecr.us-east-1.amazonaws.com/mittel/engagement:latest"
+    env_file: "engagement.env"
+    ports:
+      - "8080:8080"
+    restart: "always"
+
+volumes:
+  users_data:
+  articles_data:
+  engagement_data:
