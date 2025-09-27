@@ -67,11 +67,11 @@ resource "aws_security_group" "prod_sg" {
   description = "Security groups for the Mittel Prod VMs"
 
   ingress {
-    description     = "SSH"
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb_sg.id]
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
