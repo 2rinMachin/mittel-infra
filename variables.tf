@@ -18,3 +18,8 @@ variable "ec2_key_name" {
   description = "Key name to give the EC2 instances"
   default     = "vockey"
 }
+
+variable "domain" {
+  type        = string
+  description = "Domain to use for SSL certificates"
+}

@@ -205,12 +205,12 @@ resource "aws_instance" "vm_ingesta" {
 }
 
 resource "aws_acm_certificate" "main" {
-  domain_name       = "*.unilife.lat"
+  domain_name       = "*.${var.domain}"
   validation_method = "DNS"
 }
 
 data "aws_route53_zone" "main" {
-  name         = "unilife.lat"
+  name         = var.domain
   private_zone = false
 }
 
