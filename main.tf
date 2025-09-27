@@ -33,6 +33,35 @@ resource "aws_ecr_repository" "repos" {
   name     = "mittel/${each.key}"
 }
 
+resource "aws_security_group" "alb_sg" {
+  name        = "mittel-alb-sg"
+  description = "Security groups for the Mittel ALB"
+
+  ingress {
+    description = "HTTPS"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_security_group" "prod_sg" {
   name        = "mittel-prod-sg"
   description = "Security groups for the Mittel Prod VMs"
@@ -239,19 +268,23 @@ resource "aws_lb" "prod_alb" {
   name               = "mittel-prod-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.prod_sg.id]
+  security_groups    = [aws_security_group.alb_sg.id]
   subnets            = [data.aws_subnet.subnet_a.id, data.aws_subnet.subnet_b.id]
 }
 
 locals {
-  app_ports = ["3000", "4000", "8080"]
+  microservices = {
+    "mittel-users"      = 4000
+    "mittel-articles"   = 3000
+    "mittel-engagement" = 8080
+  }
 }
 
 resource "aws_lb_target_group" "prod_tgs" {
-  for_each = toset(local.app_ports)
+  for_each = local.microservices
 
   name     = "mittel-prod-${each.key}-tg"
-  port     = tonumber(each.key)
+  port     = tonumber(each.value)
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.main_vpc.id
 
@@ -265,35 +298,55 @@ resource "aws_lb_target_group" "prod_tgs" {
   }
 }
 
-resource "aws_lb_listener" "prod_listeners" {
-  for_each = toset(local.app_ports)
-
+resource "aws_lb_listener" "prod_https_listener" {
   load_balancer_arn = aws_lb.prod_alb.arn
-  port              = tonumber(each.key)
+  port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
   certificate_arn   = aws_acm_certificate_validation.main.certificate_arn
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.prod_tgs[each.key].arn
+    type = "fixed-response"
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Not Found"
+      status_code  = "404"
+    }
   }
 }
 
 resource "aws_lb_target_group_attachment" "prod_attachments_1" {
-  for_each = toset(local.app_ports)
+  for_each = local.microservices
 
   target_group_arn = aws_lb_target_group.prod_tgs[each.key].arn
   target_id        = aws_instance.vm_prod_1.id
-  port             = each.key
+  port             = each.value
 }
 
 resource "aws_lb_target_group_attachment" "prod_attachments_2" {
-  for_each = toset(local.app_ports)
+  for_each = local.microservices
 
   target_group_arn = aws_lb_target_group.prod_tgs[each.key].arn
   target_id        = aws_instance.vm_prod_2.id
-  port             = each.key
+  port             = each.value
+}
+
+resource "aws_lb_listener_rule" "prod_rules" {
+  for_each = local.microservices
+
+  listener_arn = aws_lb_listener.prod_https_listener.arn
+  priority     = 10 + index(keys(local.microservices), each.key)
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.prod_tgs[each.key].arn
+  }
+
+  condition {
+    host_header {
+      values = ["${each.key}.${var.domain}"]
+    }
+  }
 }
 
 resource "aws_s3_bucket" "data_analysis_bucket" {
