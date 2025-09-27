@@ -13,6 +13,11 @@ variable "subnet_b_id" {
   description = "The ID of the second subnet to use"
 }
 
+variable "databases_vm_private_ip" {
+  type        = string
+  description = "Private IP to give the databases VM"
+}
+
 variable "ec2_key_name" {
   type        = string
   description = "Key name to give the EC2 instances"

@@ -210,6 +210,7 @@ resource "aws_instance" "vm_dbs" {
   instance_type          = "t2.medium"
   key_name               = var.ec2_key_name
   vpc_security_group_ids = [aws_security_group.db_sg.id]
+  private_ip             = var.databases_vm_private_ip
 
   root_block_device {
     volume_size           = 40
