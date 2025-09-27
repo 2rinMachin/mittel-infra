@@ -19,6 +19,12 @@ variable "ec2_key_name" {
   default     = "vockey"
 }
 
+variable "data_analysis_bucket_name" {
+  type        = string
+  description = "Name to give the bucket for data analysis"
+  default     = "mittel-data-analysis-bucket"
+}
+
 variable "domain" {
   type        = string
   description = "Domain to use for SSL certificates"

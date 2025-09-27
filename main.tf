@@ -350,7 +350,7 @@ resource "aws_lb_listener_rule" "prod_rules" {
 }
 
 resource "aws_s3_bucket" "data_analysis_bucket" {
-  bucket = "mittel-data-analysis-bucket"
+  bucket = var.data_analysis_bucket_name
 
   tags = {
     name = "Data Analysis Bucket"
