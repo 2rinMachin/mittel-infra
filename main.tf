@@ -98,6 +98,15 @@ resource "aws_security_group" "prod_sg" {
     security_groups = [aws_security_group.alb_sg.id]
   }
 
+  ingress {
+    description     = "Analyst"
+    from_port       = 8001
+    to_port         = 8001
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
+  }
+
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -278,6 +287,7 @@ locals {
     "mittel-users"      = 4000
     "mittel-articles"   = 3000
     "mittel-engagement" = 8080
+    "mittel-analyst"    = 8001
   }
 }
 
@@ -336,7 +346,7 @@ resource "aws_lb_listener_rule" "prod_rules" {
   for_each = local.microservices
 
   listener_arn = aws_lb_listener.prod_https_listener.arn
-  priority     = 10 + index(keys(local.microservices), each.key)
+  priority     = 1 + index(keys(local.microservices), each.key)
 
   action {
     type             = "forward"
@@ -383,6 +393,11 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
 
     columns {
       name = "user_id"
+      type = "string"
+    }
+
+    columns {
+      name = "post_id"
       type = "string"
     }
 

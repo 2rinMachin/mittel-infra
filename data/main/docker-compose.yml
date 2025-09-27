@@ -22,6 +22,15 @@ services:
       - "8080:8080"
     restart: "always"
 
+  analyst:
+    image: "592582443043.dkr.ecr.us-east-1.amazonaws.com/mittel/analyst:latest"
+    env_file: "analyst.env"
+    ports:
+      - "8001:80"
+    restart: "always"
+    volumes:
+      - "~/.aws/credentials:/root/.aws/credentials"
+
 volumes:
   users_data:
   articles_data:
