@@ -15,24 +15,6 @@ data "aws_subnet" "subnet_b" {
 }
 
 
-locals {
-  ecr_repos = [
-    "users",
-    "articles",
-    "engagement",
-    "discovery",
-    "analyst",
-    "ingesta-1",
-    "ingesta-2",
-    "ingesta-3"
-  ]
-}
-
-resource "aws_ecr_repository" "repos" {
-  for_each = toset(local.ecr_repos)
-  name     = "mittel/${each.key}"
-}
-
 resource "aws_security_group" "alb_sg" {
   name        = "mittel-alb-sg"
   description = "Security groups for the Mittel ALB"
