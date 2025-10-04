@@ -504,11 +504,6 @@ resource "aws_glue_catalog_table" "sessions_table" {
     }
 
     columns {
-      name = "token"
-      type = "string"
-    }
-
-    columns {
       name = "expires_at"
       type = "timestamp"
     }
