@@ -14,7 +14,6 @@ data "aws_subnet" "subnet_b" {
   id = var.subnet_b_id
 }
 
-
 resource "aws_security_group" "alb_sg" {
   name        = "mittel-alb-sg"
   description = "Security groups for the Mittel ALB"
@@ -355,7 +354,7 @@ resource "aws_glue_catalog_database" "data_analysis_database" {
 }
 
 resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
-  name          = "engagement_events"
+  name          = "events"
   database_name = aws_glue_catalog_database.data_analysis_database.name
 
   storage_descriptor {
@@ -390,6 +389,125 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
 
     columns {
       name = "timestamp"
+      type = "timestamp"
+    }
+  }
+}
+
+resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
+  name          = "devices"
+  database_name = aws_glue_catalog_database.data_analysis_database.name
+
+  storage_descriptor {
+    location = "s3://${aws_s3_bucket.data_analysis_bucket.bucket}/engagement/devices"
+
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+
+    ser_de_info {
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+    }
+
+    columns {
+      name = "id"
+      type = "int"
+    }
+
+    columns {
+      name = "os"
+      type = "string"
+    }
+
+    columns {
+      name = "browser"
+      type = "string"
+    }
+
+    columns {
+      name = "screen_resolution"
+      type = "string"
+    }
+
+    columns {
+      name = "language"
+      type = "string"
+    }
+  }
+}
+
+resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
+  name          = "users"
+  database_name = aws_glue_catalog_database.data_analysis_database.name
+
+  storage_descriptor {
+    location = "s3://${aws_s3_bucket.data_analysis_bucket.bucket}/users/users"
+
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+
+    ser_de_info {
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+    }
+
+    columns {
+      name = "id"
+      type = "string"
+    }
+
+    columns {
+      name = "email"
+      type = "string"
+    }
+
+
+    columns {
+      name = "first_name"
+      type = "string"
+    }
+
+    columns {
+      name = "last_name"
+      type = "string"
+    }
+
+    columns {
+      name = "inserted_at"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "updated_at"
+      type = "timestamp"
+    }
+  }
+}
+
+resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
+  name          = "sessions"
+  database_name = aws_glue_catalog_database.data_analysis_database.name
+
+  storage_descriptor {
+    location = "s3://${aws_s3_bucket.data_analysis_bucket.bucket}/users/sessions"
+
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+
+    ser_de_info {
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+    }
+
+    columns {
+      name = "user_id"
+      type = "string"
+    }
+
+    columns {
+      name = "token"
+      type = "string"
+    }
+
+    columns {
+      name = "expires_at"
       type = "timestamp"
     }
   }
