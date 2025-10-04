@@ -512,6 +512,11 @@ resource "aws_glue_catalog_table" "sessions_table" {
       name = "expires_at"
       type = "timestamp"
     }
+
+    columns {
+      name = "inserted_at"
+      type = "timestamp"
+    }
   }
 }
 
