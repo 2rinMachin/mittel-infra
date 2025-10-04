@@ -381,6 +381,11 @@ resource "aws_glue_catalog_table" "events_table" {
     }
 
     columns {
+      name = "device_id"
+      type = "int"
+    }
+
+    columns {
       name = "user_id"
       type = "string"
     }
