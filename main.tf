@@ -459,14 +459,8 @@ resource "aws_glue_catalog_table" "users_table" {
       type = "string"
     }
 
-
     columns {
-      name = "first_name"
-      type = "string"
-    }
-
-    columns {
-      name = "last_name"
+      name = "username"
       type = "string"
     }
 
@@ -508,6 +502,108 @@ resource "aws_glue_catalog_table" "sessions_table" {
 
     columns {
       name = "expires_at"
+      type = "timestamp"
+    }
+  }
+}
+
+resource "aws_glue_catalog_table" "articles_table" {
+  name          = "articles"
+  database_name = aws_glue_catalog_database.data_analysis_database.name
+
+  storage_descriptor {
+    location = "s3://${aws_s3_bucket.data_analysis_bucket.bucket}/articles/articles"
+
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+
+    ser_de_info {
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+    }
+
+    columns {
+      name = "_id"
+      type = "string"
+    }
+
+    columns {
+      name = "title"
+      type = "string"
+    }
+
+    columns {
+      name = "author"
+      type = "struct<id:string>"
+    }
+
+    columns {
+      name = "tags"
+      type = "array<string>"
+    }
+
+    columns {
+      name = "content"
+      type = "string"
+    }
+
+    columns {
+      name = "commentsCount"
+      type = "int"
+    }
+
+    columns {
+      name = "createdAt"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "updatedAt"
+      type = "timestamp"
+    }
+  }
+}
+
+resource "aws_glue_catalog_table" "comments_table" {
+  name          = "comments"
+  database_name = aws_glue_catalog_database.data_analysis_database.name
+
+  storage_descriptor {
+    location = "s3://${aws_s3_bucket.data_analysis_bucket.bucket}/articles/comments"
+
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+
+    ser_de_info {
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+    }
+
+    columns {
+      name = "_id"
+      type = "string"
+    }
+
+    columns {
+      name = "postId"
+      type = "string"
+    }
+
+    columns {
+      name = "author"
+      type = "struct<id:string>"
+    }
+
+    columns {
+      name = "content"
+      type = "string"
+    }
+
+    columns {
+      name = "createdAt"
+      type = "timestamp"
+    }
+
+    columns {
+      name = "updatedAt"
       type = "timestamp"
     }
   }
