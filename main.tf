@@ -353,7 +353,7 @@ resource "aws_glue_catalog_database" "data_analysis_database" {
   name = "data-analysis-database"
 }
 
-resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
+resource "aws_glue_catalog_table" "events_table" {
   name          = "events"
   database_name = aws_glue_catalog_database.data_analysis_database.name
 
@@ -394,7 +394,7 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
   }
 }
 
-resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
+resource "aws_glue_catalog_table" "devices_table" {
   name          = "devices"
   database_name = aws_glue_catalog_database.data_analysis_database.name
 
@@ -435,7 +435,7 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
   }
 }
 
-resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
+resource "aws_glue_catalog_table" "users_table" {
   name          = "users"
   database_name = aws_glue_catalog_database.data_analysis_database.name
 
@@ -482,7 +482,7 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
   }
 }
 
-resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
+resource "aws_glue_catalog_table" "sessions_table" {
   name          = "sessions"
   database_name = aws_glue_catalog_database.data_analysis_database.name
 
@@ -510,5 +510,44 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
       name = "expires_at"
       type = "timestamp"
     }
+  }
+}
+
+resource "aws_amplify_app" "frontend" {
+  name = "mittel-frontend"
+
+  repository  = var.frontend_repo
+  oauth_token = var.github_token
+
+  environment_variables = {
+    VITE_USERS_URL      = "https://mittel-users.${var.domain}"
+    VITE_ARTICLES_URL   = "https://mittel-articles.${var.domain}"
+    VITE_ENGAGEMENT_URL = "https://mittel-engagement.${var.domain}"
+    VITE_DISCOVERY_URL  = "https://mittel-discovery.${var.domain}"
+    VITE_ANALYST_URL    = "https://mittel-analyst.${var.domain}"
+  }
+}
+
+resource "aws_amplify_branch" "main" {
+  app_id      = aws_amplify_app.frontend.id
+  branch_name = "main"
+
+  stage             = "PRODUCTION"
+  enable_auto_build = true
+}
+
+resource "aws_amplify_domain_association" "domain" {
+  app_id                = aws_amplify_app.frontend.id
+  domain_name           = "mittel.${var.domain}"
+  wait_for_verification = true
+
+  certificate_settings {
+    type                   = "CUSTOM"
+    custom_certificate_arn = aws_acm_certificate.main.arn
+  }
+
+  sub_domain {
+    branch_name = aws_amplify_branch.main.branch_name
+    prefix      = ""
   }
 }
