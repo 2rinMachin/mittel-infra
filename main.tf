@@ -560,17 +560,17 @@ resource "aws_glue_catalog_table" "articles_table" {
     }
 
     columns {
-      name = "commentsCount"
+      name = "commentscount"
       type = "int"
     }
 
     columns {
-      name = "createdAt"
+      name = "createdat"
       type = "timestamp"
     }
 
     columns {
-      name = "updatedAt"
+      name = "updatedat"
       type = "timestamp"
     }
   }
@@ -596,7 +596,7 @@ resource "aws_glue_catalog_table" "comments_table" {
     }
 
     columns {
-      name = "postId"
+      name = "postid"
       type = "string"
     }
 
@@ -611,12 +611,12 @@ resource "aws_glue_catalog_table" "comments_table" {
     }
 
     columns {
-      name = "createdAt"
+      name = "createdat"
       type = "timestamp"
     }
 
     columns {
-      name = "updatedAt"
+      name = "updatedat"
       type = "timestamp"
     }
   }
