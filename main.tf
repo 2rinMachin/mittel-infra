@@ -248,32 +248,6 @@ resource "aws_acm_certificate" "main" {
   validation_method = "DNS"
 }
 
-data "aws_route53_zone" "main" {
-  name         = var.domain
-  private_zone = false
-}
-
-resource "aws_route53_record" "main" {
-  for_each = {
-    for dvo in aws_acm_certificate.main.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      type   = dvo.resource_record_type
-      record = dvo.resource_record_value
-    }
-  }
-
-  zone_id = data.aws_route53_zone.main.zone_id
-  name    = each.value.name
-  type    = each.value.type
-  records = [each.value.record]
-  ttl     = 60
-}
-
-resource "aws_acm_certificate_validation" "main" {
-  certificate_arn         = aws_acm_certificate.main.arn
-  validation_record_fqdns = [for record in aws_route53_record.main : record.fqdn]
-}
-
 resource "aws_lb" "prod_alb" {
   name               = "mittel-prod-alb"
   internal           = false
@@ -315,7 +289,7 @@ resource "aws_lb_listener" "prod_https_listener" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = aws_acm_certificate_validation.main.certificate_arn
+  certificate_arn   = aws_acm_certificate.main.arn
 
   default_action {
     type = "fixed-response"
