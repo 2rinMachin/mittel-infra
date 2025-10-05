@@ -185,6 +185,12 @@ resource "aws_instance" "vm_prod_1" {
   subnet_id              = data.aws_subnet.subnet_a.id
   vpc_security_group_ids = [aws_security_group.prod_sg.id]
 
+  root_block_device {
+    volume_size           = 20
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
+
   tags = {
     Name = "Mittel Prod 1 VM"
   }
@@ -196,6 +202,12 @@ resource "aws_instance" "vm_prod_2" {
   key_name               = var.ec2_key_name
   subnet_id              = data.aws_subnet.subnet_b.id
   vpc_security_group_ids = [aws_security_group.prod_sg.id]
+
+  root_block_device {
+    volume_size           = 20
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
 
   tags = {
     Name = "Mittel Prod 2 VM"
