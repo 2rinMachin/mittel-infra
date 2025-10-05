@@ -635,6 +635,12 @@ resource "aws_amplify_app" "frontend" {
     VITE_DISCOVERY_URL  = "https://mittel-discovery.${var.domain}"
     VITE_ANALYST_URL    = "https://mittel-analyst.${var.domain}"
   }
+
+  custom_rule {
+    source = "/<*>"
+    target = "/index.html"
+    status = "200"
+  }
 }
 
 resource "aws_amplify_branch" "main" {
