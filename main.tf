@@ -646,6 +646,7 @@ resource "aws_amplify_app" "frontend" {
     VITE_ENGAGEMENT_URL = "https://mittel-engagement.${var.domain}"
     VITE_DISCOVERY_URL  = "https://mittel-discovery.${var.domain}"
     VITE_ANALYST_URL    = "https://mittel-analyst.${var.domain}"
+    VITE_PUBLIC_URL     = "https://mittel.${var.domain}"
   }
 
   custom_rule {
