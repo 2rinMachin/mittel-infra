@@ -1,0 +1,643 @@
+{
+	"info": {
+		"_postman_id": "e6147ef7-35e6-43b8-9037-6d3e8f69bf32",
+		"name": "Mittel",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43480626",
+		"_collection_link": "https://planetary-escape-1391844.postman.co/workspace/Jos%C3%A9-Grayson's-Workspace~c4bc84d3-04dd-4b1c-8d8a-76d19da3f965/collection/43480626-e6147ef7-35e6-43b8-9037-6d3e8f69bf32?action=share&source=collection_link&creator=43480626"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"jose.grayson@utec.edu.pe\",\n    \"password\": \"123456\",\n    \"first_name\": \"José\",\n    \"last_name\": \"Grayson\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{usersUrl}}/auth/register",
+							"host": [
+								"{{usersUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Log in",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code >= 200 && pm.response.code < 300) {",
+									"    const data = pm.response.json();",
+									"    pm.collectionVariables.set('sessionToken', data.token);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"jose.grayson@utec.edu.pe\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{usersUrl}}/auth/login",
+							"host": [
+								"{{usersUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Log out",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code >= 200 && pm.response.code < 300) {",
+									"    const data = pm.response.json();",
+									"    pm.collectionVariables.set('sessionToken', data.token);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{usersUrl}}/auth/logout",
+							"host": [
+								"{{usersUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Introspect",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer s1ihb7Jr5nYM-Wi-Gi0qmQ2JU32wBbmMeCbgZiBZyls",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\": \"{{sessionToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{usersUrl}}/introspect",
+							"host": [
+								"{{usersUrl}}"
+							],
+							"path": [
+								"introspect"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get self",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code >= 200 && pm.response.code < 300) {",
+									"    const data = pm.response.json();",
+									"    pm.collectionVariables.set('userId', data.id);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer hsvGicJj9AjOMyiLeED14GiqBmeuR6vlXbybar6AS98",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{usersUrl}}/users/self",
+							"host": [
+								"{{usersUrl}}"
+							],
+							"path": [
+								"users",
+								"self"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{usersUrl}}/users/:userId",
+							"host": [
+								"{{usersUrl}}"
+							],
+							"path": [
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{usersUrl}}/users/all?pattern=g&page=1&page_size=1",
+							"host": [
+								"{{usersUrl}}"
+							],
+							"path": [
+								"users",
+								"all"
+							],
+							"query": [
+								{
+									"key": "pattern",
+									"value": "g"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Articles",
+			"item": [
+				{
+					"name": "Create article",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code >= 200 && pm.response.code < 300) {",
+									"    const data = pm.response.json();",
+									"    pm.collectionVariables.set('articleId', data._id);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Hello world\",\n    \"content\": \"Hello, world!\",\n    \"tags\": [\"a\", \"b\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{articlesUrl}}/articles",
+							"host": [
+								"{{articlesUrl}}"
+							],
+							"path": [
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create comment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"postId\": \"68e2c2feae38472adeb6014d\",\n    \"content\": \"hello\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{articlesUrl}}/comments",
+							"host": [
+								"{{articlesUrl}}"
+							],
+							"path": [
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search articles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{articlesUrl}}/articles?title=hello&limit=10&skip=0",
+							"host": [
+								"{{articlesUrl}}"
+							],
+							"path": [
+								"articles"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "hello"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete article",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{articlesUrl}}/articles/:articleId",
+							"host": [
+								"{{articlesUrl}}"
+							],
+							"path": [
+								"articles",
+								":articleId"
+							],
+							"variable": [
+								{
+									"key": "articleId",
+									"value": "{{articleId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Engagement",
+			"item": [
+				{
+					"name": "Get status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Internal-Token",
+								"value": "asdf",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Record event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "hADdz_qADSG8oo2wDQNL1BvmV6FwEUz87Y77UpZO5vU",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"post_id\": \"68e166012cc96dcf83593c6\",\n    \"kind\": \"view\",\n    \"device\": {\n        \"os\": \"Debian\",\n        \"browser\": \"Mozilla Firefox\",\n        \"screen_resolution\": \"1920x1080\",\n        \"language\": \"en_US\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{engagementUrl}}/events",
+							"host": [
+								"{{engagementUrl}}"
+							],
+							"path": [
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get  events summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{engagementUrl}}/events/:postId",
+							"host": [
+								"{{engagementUrl}}"
+							],
+							"path": [
+								"events",
+								":postId"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "123"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Discovery",
+			"item": [
+				{
+					"name": "Discover articles by title",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{discoveryUrl}}/discover/articles/title/:title",
+							"host": [
+								"{{discoveryUrl}}"
+							],
+							"path": [
+								"discover",
+								"articles",
+								"title",
+								":title"
+							],
+							"variable": [
+								{
+									"key": "title",
+									"value": "test"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Discover featured articles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{discoveryUrl}}/discover/articles/featured?skip=0&limit=10",
+							"host": [
+								"{{discoveryUrl}}"
+							],
+							"path": [
+								"discover",
+								"articles",
+								"featured"
+							],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Analyst",
+			"item": [
+				{
+					"name": "Get top tags",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{analystUrl}}/tags/top",
+							"host": [
+								"{{analystUrl}}"
+							],
+							"path": [
+								"tags",
+								"top"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Count active users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{analystUrl}}/users/countactive",
+							"host": [
+								"{{analystUrl}}"
+							],
+							"path": [
+								"users",
+								"countactive"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get top articles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{analystUrl}}/articles/top",
+							"host": [
+								"{{analystUrl}}"
+							],
+							"path": [
+								"articles",
+								"top"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{sessionToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "engagementUrl",
+			"value": ""
+		},
+		{
+			"key": "usersUrl",
+			"value": ""
+		},
+		{
+			"key": "articlesUrl",
+			"value": ""
+		},
+		{
+			"key": "sessionToken",
+			"value": ""
+		},
+		{
+			"key": "postId",
+			"value": ""
+		},
+		{
+			"key": "discoveryUrl",
+			"value": ""
+		},
+		{
+			"key": "analystUrl",
+			"value": ""
+		},
+		{
+			"key": "articleId",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		}
+	]
+}
