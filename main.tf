@@ -464,6 +464,11 @@ resource "aws_glue_catalog_table" "users_table" {
     }
 
     columns {
+      name = "role"
+      type = "string"
+    }
+
+    columns {
       name = "inserted_at"
       type = "timestamp"
     }
